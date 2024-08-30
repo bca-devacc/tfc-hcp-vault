@@ -16,5 +16,5 @@ provider "hcp" {
 }
 
 provider "aws" {
-  # Configuration options
+  # Use access key and secret key from dev-programmatic-admin
 }
