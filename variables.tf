@@ -36,13 +36,13 @@ variable "tier_type" {
 }
 
 # AWS IAM user
-variable "user_name" {
+variable "iam_user_name" {
     description = "IAM User Name"
     type = string
     default = "dev-vault-admin"
 }
 
-variable "inline_po_name" {
+variable "inline_policy_name" {
     description = "Vault Policy Name"
     type = string
     default = "dev-vault-admin-policy"

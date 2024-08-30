@@ -19,11 +19,10 @@ resource "hcp_vault_cluster_admin_token" "vault_admin_token" {
 
 # Create an IAM user to connect with AWS and Vault
 resource "aws_iam_user" "vault_admin" {
-  name = var.user_name
+  name = var.iam_user_name
   path = "/"
-
   tags = {
-    Name = var.user_name
+    Name = var.iam_user_name
   }
 }
 
@@ -62,8 +61,8 @@ data "aws_iam_policy_document" "inline_po_vault" {
   }
 }
 
-resource "aws_iam_user_policy" "inline_po_attach" {
-  name   = var.inline_po_name
+resource "aws_iam_user_policy" "attach_policy" {
+  name   = var.inline_policy_name
   user   = aws_iam_user.vault_admin.name
   policy = data.aws_iam_policy_document.inline_po_vault.json
 }
