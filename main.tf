@@ -1,3 +1,4 @@
+# Create a Vault cluster at HCP
 resource "hcp_hvn" "vault_hvn" {
   hvn_id         = var.vault_hvn
   cloud_provider = var.cloud_provider
@@ -14,4 +15,55 @@ resource "hcp_vault_cluster" "vault_cluster" {
 
 resource "hcp_vault_cluster_admin_token" "vault_admin_token" {
   cluster_id = hcp_vault_cluster.vault_cluster.cluster_id
+}
+
+# Create an IAM user to connect with AWS and Vault
+resource "aws_iam_user" "vault_admin" {
+  name = var.user_name
+  path = "/"
+
+  tags = {
+    Name = var.user_name
+  }
+}
+
+resource "aws_iam_access_key" "vault_admin_accesskey" {
+  user = aws_iam_user.vault_admin.name
+  lifecycle {
+    ignore_changes = [
+    user
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "inline_po_vault" {
+  statement {
+    effect    = "Allow"
+    actions   = [
+        "iam:AttachUserPolicy",
+        "iam:CreateUser",
+        "iam:CreateAccessKey",
+        "iam:DeleteUser",
+        "iam:DeleteAccessKey",
+        "iam:DeleteUserPolicy",
+        "iam:DetachUserPolicy",
+        "iam:GetUser",
+        "iam:ListAccessKeys",
+        "iam:ListAttachedUserPolicies",
+        "iam:ListGroupsForUser",
+        "iam:ListUserPolicies",
+        "iam:PutUserPolicy",
+        "iam:AddUserToGroup",
+        "iam:RemoveUserFromGroup"
+        ]
+    resources = [
+		"arn:aws:iam::339713018668:user/vault-*"
+        ]
+  }
+}
+
+resource "aws_iam_user_policy" "inline_po_attach" {
+  name   = var.inline_po_name
+  user   = aws_iam_user.vault_admin.name
+  policy = data.aws_iam_policy_document.inline_po_vault.json
 }

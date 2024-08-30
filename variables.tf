@@ -1,3 +1,4 @@
+# Vault cluster
 variable "cloud_provider" {
     description = "Cloud Provider Name"
     type = string
@@ -32,4 +33,17 @@ variable "tier_type" {
     description = "Vault Cluster Tier Type"
     type = string
     default = "starter_small"
+}
+
+# AWS IAM user
+variable "user_name" {
+    description = "IAM User Name"
+    type = string
+    default = "dev-vault-admin"
+}
+
+variable "inline_po_name" {
+    description = "Vault Policy Name"
+    type = string
+    default = "dev-vault-admin-policy"
 }
